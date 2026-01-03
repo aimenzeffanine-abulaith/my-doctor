@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const db = require('./models')
+const models = require('./models/index')
 
 
 
