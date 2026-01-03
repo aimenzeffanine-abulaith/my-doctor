@@ -66,3 +66,17 @@ exports.me = (req, res) => {
     const user = req.currentUser;
     res.json(user)
 }
+
+exports.getProfile = async (req, res) => {
+    try {
+            const result = await models.User.findOne({
+                where: {id: req.currentUser.id},
+                include: [{model: models.Profile, as: "profile"}],
+                attributes: {exclude: ["password"]}
+            })
+
+            res.status(200).json(result)
+        } catch (e) {
+            res.status(500).json(e)
+        }
+}

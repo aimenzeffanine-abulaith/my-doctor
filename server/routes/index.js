@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController')
+const doctorController = require('../controllers/doctorController')
 const {userValidatorRules, validate} = require('../middlewares/validator')
 const isLoggedIn = require('../middlewares/auth')
 
@@ -13,5 +14,9 @@ router.get('/', (req, res) => {
 router.post("/account/signup", userValidatorRules(), validate, userController.register)
 router.post("/account/signin", userController.login)
 router.get("/account/me", isLoggedIn, userController.me)
+router.get("/account/profile", isLoggedIn, userController.getProfile)
+
+// Doctor Routes
+router.get("/doctors", doctorController.index)
 
 module.exports = router
