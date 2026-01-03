@@ -4,6 +4,7 @@ const routes = require('./routes');
 const morgan = require('morgan')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const db = require('./models')
 
 
 
@@ -33,7 +34,8 @@ app.use((error, req, res, next) => {
 })
 
 
-
-app.listen(port, () => {
-    console.log('express is running on port ' + port)
+db.sync().then(() => {
+    app.listen(port, () => {
+        console.log('express is running on port ' + port)
+    })
 })
