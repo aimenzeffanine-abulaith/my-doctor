@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController')
+const {userValidatorRules, validate} = require('../middlewares/validator')
 
 const router = express.Router();
 
@@ -8,6 +9,6 @@ router.get('/', (req, res) => {
 })
 
 // User Routes
-router.post("/account/signup", userController.register)
+router.post("/account/signup", userValidatorRules(), validate, userController.register)
 
 module.exports = router
