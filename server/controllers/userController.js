@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs')
 const models = require('../models')
+const jsonwebtoken = require('jsonwebtoken')
+
 
 exports.register = async (req, res) => {
     const {name, email, password, userType, location, specialization, address, workingHours, phone} = req.body;
@@ -29,4 +31,38 @@ exports.register = async (req, res) => {
     } catch (e) {
         res.status(500).json(e)
     }
+}
+
+exports.login = async (req, res) => {
+    const {email, password} = req.body;
+
+    try {
+        const user = await models.User.findOne({where: {email}})
+
+        if (!user) {
+            return res.status(401).json({
+                message: "email or password are incorrect"
+            })
+        }
+
+        const authSuccess = await bcrypt.compare(password, user.password)
+
+        if (!authSuccess) {
+            return res.status(401).json({
+                message: "email or password are incorrect"
+            }) 
+        }
+
+        const token = jsonwebtoken.sign({id: user.id, name: user.name, email: user.email}, process.env.JWT_SECRET);
+
+        res.status(200).json({accessToken: token})
+    } catch (e) {
+        res.status(500).json(e)
+    }
+}
+
+
+exports.me = (req, res) => {
+    const user = req.currentUser;
+    res.json(user)
 }
