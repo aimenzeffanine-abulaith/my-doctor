@@ -11,10 +11,12 @@ router.get('/', (req, res) => {
 })
 
 // User Routes
-router.post("/account/signup", userValidatorRules(), validate, userController.register)
-router.post("/account/signin", userController.login)
+router.post("/account/signup", userValidatorRules(), validate,  userController.register)
+router.post("/account/login", userController.login)
 router.get("/account/me", isLoggedIn, userController.me)
 router.get("/account/profile", isLoggedIn, userController.getProfile)
+router.put('/account/update-profile', isLoggedIn, userController.updateProfile);
+router.delete('/account/delete-profile', isLoggedIn, userController.deleteProfile);
 
 // Doctor Routes
 router.get("/doctors", doctorController.index)

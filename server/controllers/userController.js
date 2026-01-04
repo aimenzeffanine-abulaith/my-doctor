@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const models = require('../models')
-const jsonwebtoken = require('jsonwebtoken')
+const jsonwebtoken = require('jsonwebtoken');
+const { where } = require('sequelize');
 
 
 exports.register = async (req, res) => {
@@ -79,4 +80,43 @@ exports.getProfile = async (req, res) => {
         } catch (e) {
             res.status(500).json(e)
         }
+}
+
+exports.updateProfile = async (req, res) => {
+    const {name, email, password, userType, location, specialization, address, workingHours, phone} = req.body;
+    try {
+        const hashPassword = await bcrypt.hash(password, 10)
+        await models.User.update({
+            name,
+            email,
+            password: hashPassword,
+            userType,
+            latitude: location.latitude,
+            longitude: location.longitude
+        }, {where: {
+            id: currentUser.id
+        }})
+        if (userType === 'doctor') {
+        await models.Profile.update({
+                specialization,
+                address,
+                workingHours,
+                phone
+            })
+        }
+        return res.status(200).json({message: "Account updated successfully"})
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
+exports.deleteProfile = async (req, res) => {
+    try {
+        await models.User.destroy({
+            where: {id: req.currentUser.id}
+        });
+        res.status(200).json({message: "Account deleted successfully"})
+    } catch (error) {
+        return res.status(500).json(error)
+    }
 }
